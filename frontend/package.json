@@ -4,12 +4,23 @@
   "description": "fake news detector",
   "main": "popup.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack/webpack.config.js",
+    "start": "webpack serve --config webpack/webpack.config.js",
+    "dev": "webpack --config webpack/webpack.config.js --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "chrome-types": "^0.1.315"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.280",
+    "copy-webpack-plugin": "^12.0.2",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.6.3",
+    "webpack": "^5.96.1",
+    "webpack-cli": "^5.1.4"
   }
 }
