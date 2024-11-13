@@ -1,24 +1,36 @@
 {
-  "name": "clarity.ai",
-  "version": "1.0.0",
-  "description": "fake news detector",
-  "main": "popup.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack/webpack.config.js",
-    "start": "webpack serve --config webpack/webpack.config.js",
-    "dev": "webpack --config webpack/webpack.config.js --watch"
-  },
-  "author": "",
-  "license": "ISC",
+  "name": "pages",
+  "version": "0.1.0",
+  "private": true,
+  "module": "es2017",
   "dependencies": {
-    "@google/generative-ai": "^0.21.0",
-    "chrome-types": "^0.1.315"
+    "@mantine/core": "^7.14.0",
+    "@mantine/hooks": "^7.14.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/chrome": "^0.0.280",
+    "@types/node": "^16.18.119",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "dev": "webpack --config webpack.config.js --watch"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.280",
     "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^7.1.2",
+    "html-webpack-plugin": "^5.6.3",
+    "postcss": "^8.4.49",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1",
+    "style-loader": "^4.0.0",
     "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4"
