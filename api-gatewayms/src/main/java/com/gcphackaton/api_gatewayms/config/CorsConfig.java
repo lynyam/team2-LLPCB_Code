@@ -11,7 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // Configure CORS
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:3000")  // Frontend (Next.js)
+                .allowedOrigins("chrome-extension://epnbjgkcpakohacigmkgefkefbilimfc/")  // Frontend (Extension)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Autoriser les méthodes HTTP
                 .allowedHeaders("*")  // Autoriser tous les en-têtes
                 .allowCredentials(true); // Autoriser les cookies et autres credentials
