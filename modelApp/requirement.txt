@@ -1,0 +1,4 @@
+fastapi==0.103.0
+uvicorn==0.21.0
+pydantic==1.11.1
+google-generativeai==0.1.0  # Remplacez par la version correcte de la bibliothèque
