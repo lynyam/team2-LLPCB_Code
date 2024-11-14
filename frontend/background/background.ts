@@ -15,7 +15,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           url: tab.url,
         }
       );
-      sendResponse(response.data);
+
+      sendResponse(response);
     })();
   }
 

@@ -5,15 +5,21 @@ import { Analysis } from "./Analysis";
 function SidePanel() {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const handleClick = () => {
     setLoading(true);
+    setIsError(false);
     chrome.runtime
       .sendMessage({
         request: "url",
       })
       .then((response: any) => {
         setData(response);
+        setLoading(false);
+      })
+      .catch((error: any) => {
+        setIsError(true);
         setLoading(false);
       });
   };
@@ -23,6 +29,7 @@ function SidePanel() {
       <Button onClick={handleClick} loading={loading}>
         Analyze
       </Button>
+      {isError && <Text>An error occured, please try again</Text>}
       {data && <Analysis content={data} />}
     </Stack>
   );
