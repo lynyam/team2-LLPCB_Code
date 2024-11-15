@@ -1,4 +1,5 @@
 import axios from "axios";
+import { testApiArticlesProcessResponseDto } from "./test";
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
@@ -9,14 +10,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     (async () => {
       const [tab] = await chrome.tabs.query({ active: true });
 
-      const response = await axios.post(
-        "http://localhost:8080/api/articles/process",
-        {
-          url: tab.url,
-        }
-      );
+      // const response = await axios.post(
+      //   "http://localhost:8080/api/articles/process",
+      //   {
+      //     url: tab.url,
+      //   }
+      // );
 
-      sendResponse(response);
+      // sendResponse(response);
+      sendResponse(testApiArticlesProcessResponseDto);
     })();
   }
 
