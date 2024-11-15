@@ -1,0 +1,45 @@
+# Ignorer les fichiers compilés ou de build
+target/
+*.class
+
+# Ignorer les fichiers de logs
+*.log
+*.out
+*.err
+log/
+
+# Ignorer les fichiers de configuration IDE (IntelliJ, Eclipse, VSCode, etc.)
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.ipr
+*.iws
+
+### Eclipse ###
+.project
+.classpath
+.settings/
+
+### VS Code ###
+.vscode/
+
+# Ignorer les fichiers Maven téléchargés et générés
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Ignorer les fichiers spécifiques aux systèmes d'exploitation
+### macOS ###
+.DS_Store
+
+### Windows ###
+Thumbs.db
+Desktop.ini
+
+### Linux ###
+*~
+
