@@ -8,6 +8,9 @@ from logger import get_logger
 
 log = get_logger()
 
+from dotenv import load_dotenv
+
+load_dotenv()
 class ArgumentAnalysisAgent:
     def __init__(self):
         self.llm = ChatGoogleGenerativeAI(
@@ -40,11 +43,11 @@ Please analyze the provided text and return the results in the following JSON st
         "statement": "<text>"
     }},
     "arguments": [
-        {{
-            "type": "<primary|secondary>",
+        {{ #You MUST include a key for each argument, they will be parsed accordingly
+            "_type": "<primary|secondary>",
             "statement": "<text>",
             "connection_to_hypothesis": "<text>"
-        }}
+        }},
     ]
 }}""")
         ])
@@ -94,17 +97,12 @@ class ManipulationAnalysisAgent:
                 {{
                     "main_thesis": "<str>",
                     "arguments": [
-                        {{
+                        {{ 
                             "argument_text": "<str>", exactly written as received in the arguments
                             "contains_manipulation": <true|false>,
                             "manipulations": [
                                 {{
                                     "instance": "<str>",
-                                    "manipulation_type": {{
-                                        "primary": "<str>",
-                                        "secondary": "<str>",
-                                        "combined_techniques": ["<str>", "<str>"]
-                                    }},
                                     "explanation": "<str>"
                                 }}
                             ]
@@ -196,6 +194,75 @@ class TextAnalysisSystem:
             "hasty_generalization": hasty_generalization,
             "texas_sharpshooter_fallacy": texas_sharpshooter_fallacy
         }
+    
+    def raw_data_to_api_format(self, raw_analysis_dict: dict) -> dict:
+        """
+
+        """
+        argument_analysis = raw_analysis_dict.pop('argument_analysis')
+        thesis = argument_analysis.get('main_hypothesis').get('statement')
+        analysis = {
+            'thesis': thesis,
+            'arguments': []
+        }
+        # Construct the main frame of the analaysis dictionary response
+        arguments = argument_analysis.get('arguments')
+        for argument in arguments:
+            _type = argument.get('_type')
+            statememt = argument.get('statement')
+            connection_to_hypothesis = argument.get('connection_to_hypothesis')
+            arg_object = {
+                '_type': _type,
+                'statement': statememt,
+                'connection_to_hypothesis': connection_to_hypothesis,
+                'manipulations': {
+                    'ad_populum': [],
+                    'unspecified_authority_fallacy': [],
+                    'appeal_to_pride': [],
+                    'false_dilemma': [],
+                    'cherry_picking_data': [],
+                    'stork_fallacy': [],
+                    'fallacy_of_composition': [],
+                    'fallacy_of_division': [],
+                    'hasty_generalization': [],
+                    'texas_sharpshooter_fallacy': [],
+                }
+            }
+            analysis["arguments"].append(arg_object)            
+
+        arguments_processed = analysis.get('arguments')
+
+        # Loop over raw manipulations data, meaning first ad_populum, then unspecified authority fallacy, etc
+        for manipulation_name, manipulation_details in raw_analysis_dict.items():
+            # Loop over constructed arguments response, meaning in the fnal analysis go over each argument 
+            for processed_argument in arguments_processed:
+                # Find current argument in the raw manipulation data
+                # these are all the arguments
+                raw_manipulations_per_argument = manipulation_details.get('arguments')
+                # text of current proccessed argument 
+                current_processed_argument_text = processed_argument.get('statement')
+                for raw_argument in raw_manipulations_per_argument:
+                    #get the text of the raw argument
+                    raw_arg_text = raw_argument.get('argument_text')
+                    is_current_argument = raw_arg_text == current_processed_argument_text
+                    contains_manipulation = raw_argument.get('contains_manipulation')
+                    # check if the raw_arguments is the same as the current processed argument
+                    if is_current_argument and contains_manipulation:
+                        processed_argument_manipulations = processed_argument.get('manipulations')
+                        current_manipulation_processed = processed_argument_manipulations.get(manipulation_name)
+                        raw_argument_manipulations = raw_argument.get('manipulations')
+                        for raw_argument_manipulation in raw_argument_manipulations:
+                            current_manipulation_processed.append(raw_argument_manipulation)
+                        break
+                    else:
+                        continue
+
+        
+        an_args = analysis.get('arguments')
+        for arg in an_args:
+            log.info(f'{arg}\n')
+
+        return analysis
 
 def main():
     # Check for API key
@@ -215,6 +282,7 @@ def main():
     """
     
     results = analysis_system.analyze_text(test_text)
+
     
     log.info("\nArgument Analysis:")
     print(json.dumps(results["argument_analysis"], indent=2))
@@ -239,6 +307,11 @@ def main():
     log.info("\ntexas_sharpshooter_fallacy:")
     print(json.dumps(results["texas_sharpshooter_fallacy"], indent=2))
 
+    log.trace('####################################################')    
+    final_analysis = analysis_system.raw_data_to_api_format(results)
 
 if __name__ == "__main__":
     main()
+
+
+
