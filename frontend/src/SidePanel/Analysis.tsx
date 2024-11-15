@@ -1,10 +1,10 @@
 import { Button, Stack, Text } from "@mantine/core";
 import "../../styles/analysis.css";
-import { useDebouncedState, useInterval } from "@mantine/hooks";
-import { useEffect, useState } from "react";
+import { DelayedTextDisplay } from "./DelayedTextDisplay";
+import { ApiArticlesProcessResponseDto } from "../../types/api_articles_process.response.dto";
 
 interface Props {
-  content: string;
+  content: ApiArticlesProcessResponseDto;
 }
 
 export const Analysis = ({ content }: Props) => {
@@ -13,33 +13,11 @@ export const Analysis = ({ content }: Props) => {
       url: "index.html#tab",
     });
   };
-
-  const [value, setValue] = useState("");
-  const [index, setIndex] = useState(0);
-
-  const interval = useInterval(() => {
-    setValue(value + content[index]);
-    setIndex(index + 1);
-  }, 10);
-
-  useEffect(() => {
-    interval.start();
-
-    if (index >= content.length) {
-      interval.stop();
-    }
-  }, [index]);
+  const title = `{Main thesis: ${content.thesis}`;
 
   return (
     <Stack>
-      <Text
-        style={{
-          textWrap: "wrap",
-          wordBreak: "break-word",
-        }}
-      >
-        Analysis of {value}
-      </Text>
+      <DelayedTextDisplay text={title} />
       <Button variant="subtle" onClick={handleClick}>
         Dig deeper
       </Button>

@@ -1,1 +1,0 @@
-(()=>{"use strict";chrome.runtime.onInstalled.addListener((()=>{chrome.sidePanel.setPanelBehavior({openPanelOnActionClick:!0})})),chrome.runtime.onMessage.addListener(((e,n,r)=>("url"===e.request&&(async()=>{const[e]=await chrome.tabs.query({active:!0});r({url:e.url})})(),!0)))})();

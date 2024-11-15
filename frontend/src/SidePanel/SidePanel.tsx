@@ -1,30 +1,38 @@
 import { Button, Stack, Text } from "@mantine/core";
 import { useState } from "react";
 import { Analysis } from "./Analysis";
-import { useLocation } from "react-router-dom";
+
+import { ApiArticlesProcessResponseDto } from "../../types/api_articles_process.response.dto";
 
 function SidePanel() {
-  const [url, setUrl] = useState();
-
-  const location = useLocation();
-
-  console.log(location);
+  const [data, setData] = useState<ApiArticlesProcessResponseDto>();
+  const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const handleClick = () => {
+    setLoading(true);
+    setIsError(false);
     chrome.runtime
       .sendMessage({
         request: "url",
       })
-      .then((response) => {
-        const { url } = response;
-        setUrl(url);
+      .then((response: any) => {
+        setData(response);
+        setLoading(false);
+      })
+      .catch((error: any) => {
+        setIsError(true);
+        setLoading(false);
       });
   };
 
   return (
     <Stack p={10}>
-      <Button onClick={handleClick}>Analyze</Button>
-      {url && <Analysis content={url} />}
+      <Button onClick={handleClick} loading={loading}>
+        Analyze
+      </Button>
+      {isError && <Text>An error occured, please try again</Text>}
+      {data && <Analysis content={data} />}
     </Stack>
   );
 }
