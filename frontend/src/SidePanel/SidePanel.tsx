@@ -2,8 +2,10 @@ import { Button, Stack, Text } from "@mantine/core";
 import { useState } from "react";
 import { Analysis } from "./Analysis";
 
+import { ApiArticlesProcessResponseDto } from "../../types/api_articles_process.response.dto";
+
 function SidePanel() {
-  const [data, setData] = useState();
+  const [data, setData] = useState<ApiArticlesProcessResponseDto>();
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 

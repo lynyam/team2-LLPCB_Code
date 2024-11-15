@@ -1,14 +1,27 @@
-type manipulation_type = {
-  primary: string;
-  secondary: string;
+type Argument = {
+  type: "primary" | "secondary";
+  statement: string;
+  connection_to_hypothesis: string;
+  manipulations: {
+    ad_populum: Manipulation[];
+    unspecified_authority_fallacy: Manipulation[];
+    appeal_to_pride: Manipulation[];
+    false_dilemma: Manipulation[];
+    cherry_picking_data: Manipulation[];
+    stork_fallacy: Manipulation[];
+    fallacy_of_composition: Manipulation[];
+    fallacy_of_division: Manipulation[];
+    hasty_generalization: Manipulation[];
+    texas_sharpshooter_fallacy: Manipulation[];
+  };
 };
 
-type instance = {
-  phrase: string;
-  manipulationtype: manipulation_type;
+type Manipulation = {
+  instance: string;
   explanation: string;
 };
 
 export type ApiArticlesProcessResponseDto = {
-  instances: instance[];
+  thesis: string;
+  arguments: Argument[];
 };
