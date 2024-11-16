@@ -30,7 +30,7 @@ export const Argument = ({ argument }: Props) => {
             <Accordion.Control>
               <Title size="md">{argument.statement}</Title>
               <Text>{`Connection to hypothesis: ${argument.connection_to_hypothesis}`}</Text>
-              <Text>{`Type: ${argument.type}`}</Text>
+              <Text>{`Type: ${argument._type}`}</Text>
               <Text>{`Number of manipulations: ${numberOfManipulations}`}</Text>
             </Accordion.Control>
             <Accordion.Panel>

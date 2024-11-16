@@ -10,15 +10,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     (async () => {
       const [tab] = await chrome.tabs.query({ active: true });
 
-      // const response = await axios.post(
-      //   "http://localhost:8080/api/articles/process",
-      //   {
-      //     url: tab.url,
-      //   }
-      // );
-
-      // sendResponse(response);
-      sendResponse(testApiArticlesProcessResponseDto);
+      const response = await axios.post(
+        "http://localhost:8080/api/articles/process",
+        {
+          url: tab.url,
+        }
+      );
+      console.log(response.data);
+      sendResponse(response.data);
+      // sendResponse(testApiArticlesProcessResponseDto);
     })();
   }
 

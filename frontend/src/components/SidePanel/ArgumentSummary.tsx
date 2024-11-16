@@ -1,6 +1,7 @@
 import { Accordion, Stack, Text } from "@mantine/core";
 import { ApiArticlesProcessResponseDto } from "../../../types/api_articles_process.response.dto";
 import { snakeToProper } from "../../functions/snakeToProper";
+import { ManipulationTypeSummary } from "./ManipulationTypeSummary";
 
 interface Props {
   argument: ApiArticlesProcessResponseDto["arguments"][number];
@@ -26,13 +27,23 @@ export const ArgumentSummary = ({ argument }: Props) => {
             presented in a clear and logical manner. 😊
           </Text>
         ) : (
-          Object.entries(argument.manipulations).map(([key, value]) => {
-            const amount = value.length;
-            if (amount === 0) {
-              return null;
-            }
-            return <Text>{`${snakeToProper(key)}: ${amount}`}</Text>;
-          })
+          <Accordion>
+            {Object.entries(argument.manipulations).map(([key, value]) => {
+              const amount = value.length;
+              if (amount === 0) {
+                return null;
+              }
+              console.log("key", key);
+              return (
+                <ManipulationTypeSummary
+                  _key={key}
+                  key={key}
+                  manipulations={value}
+                />
+              );
+              return <Text>{`${snakeToProper(key)}: ${amount}`}</Text>;
+            })}
+          </Accordion>
         )}
       </Accordion.Panel>
     </Accordion.Item>

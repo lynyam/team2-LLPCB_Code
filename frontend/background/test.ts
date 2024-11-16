@@ -6,7 +6,7 @@ export const testApiArticlesProcessResponseDto: ApiArticlesProcessResponseDto =
       "The rise of AI will lead to significant job displacement in various sectors.",
     arguments: [
       {
-        type: "primary",
+        _type: "primary",
         statement:
           "AI-driven automation is already replacing jobs in manufacturing.",
         connection_to_hypothesis:
@@ -117,7 +117,7 @@ export const testApiArticlesProcessResponseDto: ApiArticlesProcessResponseDto =
         },
       },
       {
-        type: "secondary",
+        _type: "secondary",
         statement:
           "People are not adequately prepared for the social consequences of AI-driven automation.",
         connection_to_hypothesis:
@@ -176,7 +176,7 @@ export const testApiArticlesProcessResponseDto: ApiArticlesProcessResponseDto =
         },
       },
       {
-        type: "secondary",
+        _type: "secondary",
         statement:
           "The development of AI could lead to the creation of entirely new industries and job opportunities.",
         connection_to_hypothesis:

@@ -16,12 +16,7 @@ export const Analysis = ({ content }: Props) => {
 
   return (
     <Stack>
-      <Title
-        size="lg"
-        style={{
-          textAlign: "center",
-        }}
-      >{`${content.thesis}`}</Title>
+      <Title size="lg">{`Main thesis: ${content.thesis}`}</Title>
       <Divider />
       <Text>{`Arguments (${content.arguments.length}):`}</Text>
       <Accordion>
