@@ -1,6 +1,7 @@
 import { Accordion, Button, Divider, Stack, Text, Title } from "@mantine/core";
 import { ApiArticlesProcessResponseDto } from "../../../types/api_articles_process.response.dto";
 import { ArgumentSummary } from "./ArgumentSummary";
+import { Shovel } from "tabler-icons-react";
 
 interface Props {
   content: ApiArticlesProcessResponseDto;
@@ -29,7 +30,7 @@ export const Analysis = ({ content }: Props) => {
         ))}
       </Accordion>
 
-      <Button onClick={handleClick} variant="outline">
+      <Button onClick={handleClick} variant="outline" rightSection={<Shovel />}>
         Dig deeper
       </Button>
     </Stack>

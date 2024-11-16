@@ -1,6 +1,7 @@
 import { Button, Overlay, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Analysis } from "./Analysis";
+import { Analyze } from "tabler-icons-react";
 
 import { useLocalStorage } from "@mantine/hooks";
 import { ApiArticlesProcessResponseDto } from "../../../types/api_articles_process.response.dto";
@@ -40,7 +41,11 @@ function SidePanel() {
 
   return (
     <Stack p={10}>
-      <Button onClick={handleClick} loading={loading}>
+      <Button
+        onClick={handleClick}
+        loading={loading}
+        rightSection={<Analyze />}
+      >
         Analyze
       </Button>
       {isError && <Text>An error occured, please try again</Text>}
