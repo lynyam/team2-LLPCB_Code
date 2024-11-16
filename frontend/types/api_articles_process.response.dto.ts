@@ -1,5 +1,5 @@
 type Argument = {
-  type: "primary" | "secondary";
+  _type: "primary" | "secondary";
   statement: string;
   connection_to_hypothesis: string;
   manipulations: {

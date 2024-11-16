@@ -3,8 +3,8 @@ import {
   createHashRouter,
   createMemoryRouter,
 } from "react-router-dom";
-import SidePanel from "./SidePanel/SidePanel";
-import { Tab } from "./Tab/Tab";
+import SidePanel from "./components/SidePanel/SidePanel";
+import { Tab } from "./components/Tab/Tab";
 
 // const [tab] = await chrome.tabs.query({ active: true });
 // const id = `${tab.id}`;
