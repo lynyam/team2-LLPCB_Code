@@ -17,9 +17,9 @@ function SidePanel() {
     defaultValue: undefined,
   });
 
-  // useEffect(() => {
-  //   setContent(undefined);
-  // }, []);
+  useEffect(() => {
+    setContent(undefined);
+  }, []);
 
   const handleClick = () => {
     setLoading(true);
@@ -29,8 +29,29 @@ function SidePanel() {
       .sendMessage({
         request: "url",
       })
-      .then((response: any) => {
-        setContent(response);
+      .then((response: ApiArticlesProcessResponseDto) => {
+        const orderedArguments = response?.arguments.sort((a, b) => {
+          const lenManA = Object.values(a.manipulations).reduce(
+            (acc, curr) => acc + curr.length,
+            0
+          );
+          const lenManB = Object.values(b.manipulations).reduce(
+            (acc, curr) => acc + curr.length,
+            0
+          );
+          if (lenManA > lenManB) {
+            return -1;
+          }
+          if (lenManA < lenManB) {
+            return 1;
+          }
+          return 0;
+        });
+
+        setContent({
+          ...response,
+          arguments: orderedArguments,
+        });
         setLoading(false);
       })
       .catch((error: any) => {
@@ -41,7 +62,11 @@ function SidePanel() {
 
   return (
     <Stack p={10} pos="relative">
-      <Button onClick={handleClick} rightSection={<Analyze />}>
+      <Button
+        onClick={handleClick}
+        loading={loading}
+        rightSection={<Analyze />}
+      >
         Analyze
       </Button>
       {isError && <Text>An error occured, please try again</Text>}
