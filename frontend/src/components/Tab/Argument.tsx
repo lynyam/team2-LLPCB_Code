@@ -13,6 +13,7 @@ import {
 import { ApiArticlesProcessResponseDto } from "../../../types/api_articles_process.response.dto";
 import { snakeToProper } from "../../functions/snakeToProper";
 import { HelpHover } from "../shared/HelpHover";
+import { ManipulationIcons } from "../SidePanel/ManipulationTypeSummary";
 
 interface Props {
   argument: ApiArticlesProcessResponseDto["arguments"][number];
@@ -51,6 +52,11 @@ export const Argument = ({ argument }: Props) => {
                         <Stack key={key}>
                           {index !== 0 && <Divider />}
                           <Group>
+                            {
+                              ManipulationIcons[
+                                key as keyof typeof ManipulationIcons
+                              ]
+                            }
                             <Text fw="bold">{`${snakeToProper(key)}: ${
                               value.length
                             }`}</Text>
