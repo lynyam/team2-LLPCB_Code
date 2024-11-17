@@ -258,10 +258,6 @@ class TextAnalysisSystem:
                         'Noting cancer clusters without considering population density'
                 Counter: Examine all data points and consider broader context"""
 
-    # async def analyze_text(self, text: str) -> dict:
-    #     """Perform analysis and return in API format"""
-    #     raw_results = await self._analyze_raw(text)
-    #     return self.raw_data_to_api_format(raw_results)
 
     async def analyze_text(self, text: str) -> dict:
         """Perform analysis and return in API format"""
