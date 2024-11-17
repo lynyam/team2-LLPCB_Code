@@ -124,6 +124,7 @@ class ManipulationAnalysisAgent:
                 Analysis Request: Generate JSON Analysis of Manipulation Techniques
 
                 For each provided argument:
+                IMPORTANT: Focus on HOW the argument is supported, not WHETHER the argument itself is manipulative
                 1. Examine the text surrounding and supporting this argument
                 2. Identify specific instances where the above stated manipulation technique is used to:
                 - Support the argument
@@ -132,7 +133,6 @@ class ManipulationAnalysisAgent:
                 3. For each identified instance:
                 - Extract the exact manipulative text
                 - Explain how it uses this manipulation to support the argument
-                - Note: Focus on HOW the argument is supported, not WHETHER the argument itself is manipulative
 
                 Example distinction:
                 - Argument: "We should reduce carbon emissions"
