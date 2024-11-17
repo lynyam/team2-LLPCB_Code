@@ -1,4 +1,5 @@
 import axios from "axios";
+import { testApiArticlesProcessResponseDto } from "./test";
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
@@ -15,8 +16,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           url: tab.url,
         }
       );
-
-      sendResponse(response);
+      console.log(response.data);
+      sendResponse(response.data);
+      // sendResponse(testApiArticlesProcessResponseDto);
     })();
   }
 
