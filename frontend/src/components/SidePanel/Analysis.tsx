@@ -1,7 +1,17 @@
-import { Accordion, Button, Divider, Stack, Text, Title } from "@mantine/core";
+import {
+  Accordion,
+  Button,
+  Divider,
+  Group,
+  RingProgress,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import { ApiArticlesProcessResponseDto } from "../../../types/api_articles_process.response.dto";
 import { ArgumentSummary } from "./ArgumentSummary";
 import { Shovel } from "tabler-icons-react";
+import { ScoreDetails } from "./ScoreDetails";
 
 interface Props {
   content: ApiArticlesProcessResponseDto;
@@ -16,9 +26,16 @@ export const Analysis = ({ content }: Props) => {
 
   return (
     <Stack>
-      <Title size="lg">{`Main thesis: ${content.thesis}`}</Title>
+      <ScoreDetails scoreDetails={content.score} />
       <Divider />
-      <Title size="sm">{`Arguments: ${content.arguments.length}`}</Title>
+      <Group gap={2}>
+        <Text size="xl" fw="bold">
+          Main thesis:{" "}
+        </Text>
+        <Text size="xl">{content.thesis}</Text>
+      </Group>
+      <Divider />
+      <Title size="md">{`Number of Arguments: ${content.arguments.length}`}</Title>
       <Accordion>
         {content.arguments.map((argument, index) => (
           <ArgumentSummary key={index} argument={argument} />

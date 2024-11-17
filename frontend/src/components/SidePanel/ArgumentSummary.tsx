@@ -17,7 +17,7 @@ export const ArgumentSummary = ({ argument }: Props) => {
       <Accordion.Control>
         <Stack>
           <Text>{argument.statement}</Text>
-          <Text>{`Number of manipulations: ${numberOfManipulations}`}</Text>
+          <Text>{`Number of Manipulations: ${numberOfManipulations}`}</Text>
         </Stack>
       </Accordion.Control>
       <Accordion.Panel>
