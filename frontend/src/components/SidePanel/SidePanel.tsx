@@ -1,4 +1,4 @@
-import { Button, Overlay, Stack, Text } from "@mantine/core";
+import { Button, LoadingOverlay, Overlay, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Analysis } from "./Analysis";
 import { Analyze, Container } from "tabler-icons-react";
@@ -11,26 +11,43 @@ function SidePanel() {
   const [isError, setIsError] = useState(false);
 
   const [content, setContent] = useLocalStorage<
-    ApiArticlesProcessResponseDto | undefined
+    ApiArticlesProcessResponseDto | "undefined"
   >({
     key: "content",
-    defaultValue: undefined,
+    defaultValue: "undefined",
   });
-
-  useEffect(() => {
-    setContent(undefined);
-  }, []);
 
   const handleClick = () => {
     setLoading(true);
     setIsError(false);
-    setContent(undefined);
+    setContent("undefined");
     chrome.runtime
       .sendMessage({
         request: "url",
       })
-      .then((response: any) => {
-        setContent(response);
+      .then((response: ApiArticlesProcessResponseDto) => {
+        const orderedArguments = response?.arguments.sort((a, b) => {
+          const lenManA = Object.values(a.manipulations).reduce(
+            (acc, curr) => acc + curr.length,
+            0
+          );
+          const lenManB = Object.values(b.manipulations).reduce(
+            (acc, curr) => acc + curr.length,
+            0
+          );
+          if (lenManA > lenManB) {
+            return -1;
+          }
+          if (lenManA < lenManB) {
+            return 1;
+          }
+          return 0;
+        });
+
+        setContent({
+          ...response,
+          arguments: orderedArguments,
+        });
         setLoading(false);
       })
       .catch((error: any) => {
@@ -41,15 +58,11 @@ function SidePanel() {
 
   return (
     <Stack p={10}>
-      <Button
-        onClick={handleClick}
-        loading={loading}
-        rightSection={<Analyze />}
-      >
+      <Button onClick={handleClick} loading={loading}>
         Analyze
       </Button>
       {isError && <Text>An error occured, please try again</Text>}
-      {content && <Analysis content={content} />}
+      {content && content !== "undefined" && <Analysis content={content} />}
     </Stack>
   );
 }

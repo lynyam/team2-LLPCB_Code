@@ -18,7 +18,7 @@ export const Analysis = ({ content }: Props) => {
     <Stack>
       <Title size="lg">{`Main thesis: ${content.thesis}`}</Title>
       <Divider />
-      <Text>{`Arguments (${content.arguments.length}):`}</Text>
+      <Title size="sm">{`Arguments: ${content.arguments.length}`}</Title>
       <Accordion>
         {content.arguments.map((argument, index) => (
           <ArgumentSummary key={index} argument={argument} />

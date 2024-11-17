@@ -33,7 +33,6 @@ export const ArgumentSummary = ({ argument }: Props) => {
               if (amount === 0) {
                 return null;
               }
-              console.log("key", key);
               return (
                 <ManipulationTypeSummary
                   _key={key}
@@ -41,7 +40,6 @@ export const ArgumentSummary = ({ argument }: Props) => {
                   manipulations={value}
                 />
               );
-              return <Text>{`${snakeToProper(key)}: ${amount}`}</Text>;
             })}
           </Accordion>
         )}
