@@ -47,6 +47,7 @@ const newspaperTheme: MantineThemeOverride = {
   primaryColor: "gray",
   fontFamily: "Georgia, serif", // Classic serif font for a newspaper feel
   colors,
+
   components: {
     Button: {
       defaultProps: {

@@ -1,4 +1,12 @@
-import { Button, LoadingOverlay, Overlay, Stack, Text } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Group,
+  LoadingOverlay,
+  Overlay,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Analysis } from "./Analysis";
 import { Analyze, Container } from "tabler-icons-react";
@@ -57,12 +65,14 @@ function SidePanel() {
   };
 
   return (
-    <Stack p={10}>
-      <Button onClick={handleClick} loading={loading}>
-        Analyze
-      </Button>
-      {isError && <Text>An error occured, please try again</Text>}
-      {content && content !== "undefined" && <Analysis content={content} />}
+    <Stack>
+      <Stack p={10}>
+        <Button onClick={handleClick} loading={loading}>
+          Analyze
+        </Button>
+        {isError && <Text>An error occured, please try again</Text>}
+        {content && content !== "undefined" && <Analysis content={content} />}
+      </Stack>
     </Stack>
   );
 }
