@@ -59,7 +59,7 @@ class ArgumentAnalysisAgent:
             ("system", """You are an expert argument analysis agent. Your task is to:
 1. Analyze the given text carefully
 2. Identify the main hypothesis
-3. Extract supporting arguments
+3. Extract supporting arguments, ensure the argument is short and concise
 4. Structure your response in JSON format
 
 Your analysis should be thorough and precise."""),
@@ -79,7 +79,7 @@ Please analyze the provided text and return the results in the following JSON st
     "arguments": [
         {{
             "_type": "<primary|secondary>",
-            "statement": "<text>", write the statement in the original language of the text
+            "statement": "<text>", write the statement in a short and concise way, in the original language of the text
             "connection_to_hypothesis": "<text>"
         }},
     ]
@@ -124,6 +124,7 @@ class ManipulationAnalysisAgent:
                 Analysis Request: Generate JSON Analysis of Manipulation Techniques
 
                 For each provided argument:
+                IMPORTANT: Focus on HOW the argument is supported, not WHETHER the argument itself is manipulative
                 1. Examine the text surrounding and supporting this argument
                 2. Identify specific instances where the above stated manipulation technique is used to:
                 - Support the argument
@@ -132,7 +133,6 @@ class ManipulationAnalysisAgent:
                 3. For each identified instance:
                 - Extract the exact manipulative text
                 - Explain how it uses this manipulation to support the argument
-                - Note: Focus on HOW the argument is supported, not WHETHER the argument itself is manipulative
 
                 Example distinction:
                 - Argument: "We should reduce carbon emissions"
