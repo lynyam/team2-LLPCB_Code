@@ -1,3 +1,6 @@
+#Env
+.env
+
 # Ignorer les fichiers compilés ou de build
 target/
 *.class
