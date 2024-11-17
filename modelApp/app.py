@@ -27,6 +27,12 @@ class Manipulation(BaseModel):
     instance: str
     explanation: str
 
+class MetricsExplanation(BaseModel):
+    manipulation_density: str
+    affected_arguments_ratio: str
+    average_techniques_per_argument: str
+    max_techniques_in_single_argument: str
+
 class ArgumentManipulations(BaseModel):
     ad_populum: List[Manipulation]
     unspecified_authority_fallacy: List[Manipulation]
@@ -39,6 +45,16 @@ class ArgumentManipulations(BaseModel):
     hasty_generalization: List[Manipulation]
     texas_sharpshooter_fallacy: List[Manipulation]
 
+class ScoreDetails(BaseModel):
+    overall_score: float | str
+    manipulation_density: float | str
+    affected_arguments_ratio: float | str
+    average_techniques_per_argument: float | str
+    max_techniques_in_single_argument: int | str
+    risk_level: str
+    interpretation: str
+    metrics_explanation: MetricsExplanation
+
 class Argument(BaseModel):
     _type: str
     statement: str
@@ -48,6 +64,8 @@ class Argument(BaseModel):
 class AnalysisOutput(BaseModel):
     thesis: str
     arguments: List[Argument]
+    score: ScoreDetails
+    
 
 class ArgumentAnalysisAgent:
     def __init__(self):
