@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 import json
+import asyncio
 from modelApp.logger import get_logger
 import os
 from dotenv import load_dotenv
@@ -203,27 +204,68 @@ class TextAnalysisSystem:
         raw_results = await self._analyze_raw(text)
         return self.raw_data_to_api_format(raw_results)
 
+    # async def _analyze_raw(self, text: str) -> dict:
+    #     """Perform both argument and manipulation analysis on the text."""
+    #     argument_analysis = await self.argument_agent.analyze(text)
+        
+    #     # Run all manipulation analyses concurrently
+    #     manipulation_analyses = {
+    #         "argument_analysis": argument_analysis,
+    #         "ad_populum": await self.manipulation_agent.analyze(self.ad_populum, text, str(argument_analysis)),
+    #         "unspecified_authority_fallacy": await self.manipulation_agent.analyze(self.unspecified_authority_fallacy, text, str(argument_analysis)),
+    #         "appeal_to_pride": await self.manipulation_agent.analyze(self.appeal_to_pride, text, str(argument_analysis)),
+    #         "false_dilemma": await self.manipulation_agent.analyze(self.false_dilemma, text, str(argument_analysis)),
+    #         "cherry_picking_data": await self.manipulation_agent.analyze(self.cherry_picking_data, text, str(argument_analysis)),
+    #         "stork_fallacy": await self.manipulation_agent.analyze(self.stork_fallacy, text, str(argument_analysis)),
+    #         "fallacy_of_composition": await self.manipulation_agent.analyze(self.fallacy_of_composition, text, str(argument_analysis)),
+    #         "fallacy_of_division": await self.manipulation_agent.analyze(self.fallacy_of_division, text, str(argument_analysis)),
+    #         "hasty_generalization": await self.manipulation_agent.analyze(self.hasty_generalization, text, str(argument_analysis)),
+    #         "texas_sharpshooter_fallacy": await self.manipulation_agent.analyze(self.texas_sharpshooter_fallacy, text, str(argument_analysis))
+    #     }
+        
+    #     return manipulation_analyses
+
     async def _analyze_raw(self, text: str) -> dict:
-        """Perform both argument and manipulation analysis on the text."""
+        """Perform both argument and manipulation analysis on the text concurrently."""
+        # First get the argument analysis since other analyses depend on it
         argument_analysis = await self.argument_agent.analyze(text)
         
+        # Define all manipulation techniques and their corresponding definitions
+        manipulation_tasks = {
+            "ad_populum": self.ad_populum,
+            "unspecified_authority_fallacy": self.unspecified_authority_fallacy,
+            "appeal_to_pride": self.appeal_to_pride,
+            "false_dilemma": self.false_dilemma,
+            "cherry_picking_data": self.cherry_picking_data,
+            "stork_fallacy": self.stork_fallacy,
+            "fallacy_of_composition": self.fallacy_of_composition,
+            "fallacy_of_division": self.fallacy_of_division,
+            "hasty_generalization": self.hasty_generalization,
+            "texas_sharpshooter_fallacy": self.texas_sharpshooter_fallacy
+        }
+        
+        # Create coroutines for each manipulation analysis
+        async def analyze_manipulation(name: str, definition: str) -> tuple:
+            """Helper function to run manipulation analysis and return result with its name"""
+            result = await self.manipulation_agent.analyze(definition, text, str(argument_analysis))
+            return (name, result)
+        
+        # Gather all manipulation analysis tasks
+        tasks = [
+            analyze_manipulation(name, definition) 
+            for name, definition in manipulation_tasks.items()
+        ]
+        
         # Run all manipulation analyses concurrently
+        manipulation_results = await asyncio.gather(*tasks)
+        
+        # Combine results into final dictionary
         manipulation_analyses = {
             "argument_analysis": argument_analysis,
-            "ad_populum": await self.manipulation_agent.analyze(self.ad_populum, text, str(argument_analysis)),
-            "unspecified_authority_fallacy": await self.manipulation_agent.analyze(self.unspecified_authority_fallacy, text, str(argument_analysis)),
-            "appeal_to_pride": await self.manipulation_agent.analyze(self.appeal_to_pride, text, str(argument_analysis)),
-            "false_dilemma": await self.manipulation_agent.analyze(self.false_dilemma, text, str(argument_analysis)),
-            "cherry_picking_data": await self.manipulation_agent.analyze(self.cherry_picking_data, text, str(argument_analysis)),
-            "stork_fallacy": await self.manipulation_agent.analyze(self.stork_fallacy, text, str(argument_analysis)),
-            "fallacy_of_composition": await self.manipulation_agent.analyze(self.fallacy_of_composition, text, str(argument_analysis)),
-            "fallacy_of_division": await self.manipulation_agent.analyze(self.fallacy_of_division, text, str(argument_analysis)),
-            "hasty_generalization": await self.manipulation_agent.analyze(self.hasty_generalization, text, str(argument_analysis)),
-            "texas_sharpshooter_fallacy": await self.manipulation_agent.analyze(self.texas_sharpshooter_fallacy, text, str(argument_analysis))
+            **dict(manipulation_results)
         }
         
         return manipulation_analyses
-
 
     def raw_data_to_api_format(self, raw_analysis_dict: dict) -> dict:
         """Convert raw analysis data to API format"""
