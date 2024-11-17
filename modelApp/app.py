@@ -59,7 +59,7 @@ class ArgumentAnalysisAgent:
             ("system", """You are an expert argument analysis agent. Your task is to:
 1. Analyze the given text carefully
 2. Identify the main hypothesis
-3. Extract supporting arguments
+3. Extract supporting arguments, ensure the argument is short and concise
 4. Structure your response in JSON format
 
 Your analysis should be thorough and precise."""),
@@ -79,7 +79,7 @@ Please analyze the provided text and return the results in the following JSON st
     "arguments": [
         {{
             "_type": "<primary|secondary>",
-            "statement": "<text>", write the statement in the original language of the text
+            "statement": "<text>", write the statement in a short and concise way, in the original language of the text
             "connection_to_hypothesis": "<text>"
         }},
     ]
