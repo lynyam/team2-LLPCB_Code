@@ -1,4 +1,4 @@
-import { Button, Overlay, Stack, Text } from "@mantine/core";
+import { Button, LoadingOverlay, Overlay, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Analysis } from "./Analysis";
 import { Analyze, Container } from "tabler-icons-react";
@@ -17,9 +17,9 @@ function SidePanel() {
     defaultValue: undefined,
   });
 
-  useEffect(() => {
-    setContent(undefined);
-  }, []);
+  // useEffect(() => {
+  //   setContent(undefined);
+  // }, []);
 
   const handleClick = () => {
     setLoading(true);
@@ -40,12 +40,8 @@ function SidePanel() {
   };
 
   return (
-    <Stack p={10}>
-      <Button
-        onClick={handleClick}
-        loading={loading}
-        rightSection={<Analyze />}
-      >
+    <Stack p={10} pos="relative">
+      <Button onClick={handleClick} rightSection={<Analyze />}>
         Analyze
       </Button>
       {isError && <Text>An error occured, please try again</Text>}
