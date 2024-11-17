@@ -68,7 +68,7 @@ Analysis Request: Generate JSON Analysis of Text Hypothesis and Arguments
 
 Please analyze the provided text and return the results in the following JSON structure:
 
-### TEST
+### TEXT
 {text}
 
 ### OUTPUT
