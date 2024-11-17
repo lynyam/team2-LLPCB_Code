@@ -5,12 +5,14 @@ import {
   Divider,
   Group,
   Paper,
+  Spoiler,
   Stack,
   Text,
   Title,
 } from "@mantine/core";
 import { ApiArticlesProcessResponseDto } from "../../../types/api_articles_process.response.dto";
 import { snakeToProper } from "../../functions/snakeToProper";
+import { HelpHover } from "../shared/HelpHover";
 
 interface Props {
   argument: ApiArticlesProcessResponseDto["arguments"][number];
@@ -30,7 +32,6 @@ export const Argument = ({ argument }: Props) => {
             <Accordion.Control>
               <Title size="md">{argument.statement}</Title>
               <Text>{`Connection to hypothesis: ${argument.connection_to_hypothesis}`}</Text>
-              <Text>{`Type: ${argument._type}`}</Text>
               <Text>{`Number of manipulations: ${numberOfManipulations}`}</Text>
             </Accordion.Control>
             <Accordion.Panel>
@@ -49,9 +50,13 @@ export const Argument = ({ argument }: Props) => {
                       return (
                         <Stack key={key}>
                           {index !== 0 && <Divider />}
-                          <Text fw="bold">{`${snakeToProper(key)}: ${
-                            value.length
-                          }`}</Text>
+                          <Group>
+                            <Text fw="bold">{`${snakeToProper(key)}: ${
+                              value.length
+                            }`}</Text>
+                            <HelpHover _key={key} />
+                          </Group>
+
                           {value.map((manipulation, index) => {
                             return (
                               <Group key={index}>

@@ -4,11 +4,13 @@ import { ApiArticlesProcessResponseDto } from "../../../types/api_articles_proce
 import { Argument } from "./Argument";
 
 export const Tab = () => {
-  const [content, setContent] = useLocalStorage<ApiArticlesProcessResponseDto>({
+  const [content, setContent] = useLocalStorage<
+    ApiArticlesProcessResponseDto | "undefined"
+  >({
     key: "content",
-    defaultValue: undefined,
+    defaultValue: "undefined",
   });
-  if (!content) {
+  if (!content || content === "undefined") {
     return <Text>No content found</Text>;
   }
 
