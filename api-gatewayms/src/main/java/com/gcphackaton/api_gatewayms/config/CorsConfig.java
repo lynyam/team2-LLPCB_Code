@@ -11,9 +11,8 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // Configure CORS
         registry.addMapping("/api/**")
-                .allowedOrigins("chrome-extension://epnbjgkcpakohacigmkgefkefbilimfc/")  // Frontend (Extension)
+                .allowedOrigins("chrome-extension://*")  // Frontend (Extension)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Autoriser les méthodes HTTP
-                .allowedHeaders("*")  // Autoriser tous les en-têtes
-                .allowCredentials(true); // Autoriser les cookies et autres credentials
+                .allowedHeaders("*");  // Autoriser tous les en-têtes
     }
 }
