@@ -21,7 +21,26 @@ type Manipulation = {
   explanation: string;
 };
 
+type MetricsExplanation = {
+  manipulation_density: string;
+  affected_arguments_ratio: string;
+  average_techniques_per_argument: string;
+  max_techniques_in_single_argument: string;
+};
+
+type ScoreDetails = {
+  overall_score: string;
+  manipulation_density: string;
+  affected_arguments_ratio: string;
+  average_techniques_per_argument: string;
+  max_techniques_in_single_argument: string;
+  risk_level: string;
+  interpretation: string;
+  metrics_explanation: MetricsExplanation;
+};
+
 export type ApiArticlesProcessResponseDto = {
   thesis: string;
   arguments: Argument[];
+  score: ScoreDetails;
 };

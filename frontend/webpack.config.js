@@ -33,6 +33,7 @@ module.exports = {
       patterns: [
         { from: "public/manifest.json", to: "manifest.json" },
         { from: "public/icon.png", to: "icon.png" },
+        { from: "public/favicon.ico", to: "favicon.ico" },
       ],
     }),
     ...getHtmlPlugins(["index"]),
