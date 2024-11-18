@@ -91,29 +91,26 @@ def calculate_manipulation_score(text_analysis: dict) -> dict:
 
 def interpret_score(score_data):
     """
-    Provide interpretation of the manipulation score using a dictionary-based approach.
-    Returns interpretation details including risk level and metrics explanation.
+    Provide interpretation of the manipulation/reasoning score using a three-tier system.
+    Returns interpretation details including risk level and interpretation.
+    
+    Score ranges:
+    0-25: Excellent (Well-Reasoned)
+    26-75: Moderate (Some Issues)
+    76-100: Poor (Highly Manipulative)
     """
     SCORE_INTERPRETATIONS = {
-        (0, 20): {
-            "risk_level": "Low",
-            "interpretation": "The text shows minimal signs of manipulation"
+        (0, 26): {
+            "risk_level": "Excellent",
+            "interpretation": "This text is well-reasoned, with minimal signs of manipulation or fallacious arguments. However, it's always good to remain critical and verify information independently."
         },
-        (20, 40): {
+        (26, 76): {
             "risk_level": "Moderate",
-            "interpretation": "The text contains some manipulative elements"
+            "interpretation": "This text contains a mix of logical and manipulative arguments. Review highlighted sections for potential fallacies."
         },
-        (40, 60): {
-            "risk_level": "Substantial",
-            "interpretation": "The text shows significant manipulation patterns"
-        },
-        (60, 80): {
-            "risk_level": "High",
-            "interpretation": "The text is heavily manipulated"
-        },
-        (80, 100): {
-            "risk_level": "Extreme",
-            "interpretation": "The text shows pervasive manipulation throughout"
+        (76, 101): {  # Using 101 to include 100 in the range
+            "risk_level": "Poor",
+            "interpretation": "This text shows frequent use of manipulative rhetoric and fallacies. Approach with caution and verify its claims."
         }
     }
 
@@ -129,16 +126,10 @@ def interpret_score(score_data):
         result = next(
             (interp for (low, high), interp in SCORE_INTERPRETATIONS.items()
              if low <= score < high),
-            {"risk_level": "Invalid",
-             "interpretation": "Score outside expected range"}
+            {
+                "risk_level": "Invalid",
+                "interpretation": "Score outside expected range"
+            }
         )
-
-    # Add metrics explanation to the result
-    result["metrics_explanation"] = {
-        "manipulation_density": "Proportion of total possible manipulation techniques used across all arguments",
-        "affected_arguments_ratio": "Proportion of arguments containing any manipulation",
-        "average_techniques_per_argument": "Average number of manipulation techniques per argument",
-        "max_techniques_in_single_argument": "Highest number of techniques used in any single argument"
-    }
 
     return result
