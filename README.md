@@ -25,7 +25,7 @@ Before you begin, ensure you have the following installed on your machine:
 1. Navigate to directory ```frontend``` and run:
   - ```bash
     npm install
-    npm build
+    npm run build
     ```
 
 1. **Run docker compose**:
