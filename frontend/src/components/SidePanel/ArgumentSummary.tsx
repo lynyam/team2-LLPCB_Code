@@ -17,13 +17,13 @@ export const ArgumentSummary = ({ argument }: Props) => {
       <Accordion.Control>
         <Stack>
           <Text>{argument.statement}</Text>
-          <Text>{`Number of Manipulations: ${numberOfManipulations}`}</Text>
+          <Text>{`Number of Fallacies: ${numberOfManipulations}`}</Text>
         </Stack>
       </Accordion.Control>
       <Accordion.Panel>
         {numberOfManipulations === 0 ? (
           <Text>
-            No manipulation detected in this argument. It appears to have been
+            No fallacy detected in this argument. It appears to have been
             presented in a clear and logical manner. 😊
           </Text>
         ) : (

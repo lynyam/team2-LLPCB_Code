@@ -33,13 +33,13 @@ export const Argument = ({ argument }: Props) => {
             <Accordion.Control>
               <Title size="md">{argument.statement}</Title>
               <Text>{`Connection to hypothesis: ${argument.connection_to_hypothesis}`}</Text>
-              <Text>{`Number of manipulations: ${numberOfManipulations}`}</Text>
+              <Text>{`Number of fallaciess: ${numberOfManipulations}`}</Text>
             </Accordion.Control>
             <Accordion.Panel>
               {numberOfManipulations === 0 ? (
                 <Text>
-                  No manipulation detected in this argument. It appears to have
-                  been presented in a clear and logical manner. 😊
+                  No fallacy detected in this argument. It appears to have been
+                  presented in a clear and logical manner. 😊
                 </Text>
               ) : (
                 <Stack>
