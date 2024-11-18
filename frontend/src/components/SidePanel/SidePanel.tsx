@@ -25,6 +25,10 @@ function SidePanel() {
     defaultValue: "undefined",
   });
 
+  useEffect(() => {
+    setContent("undefined")
+  }, [])
+
   const handleClick = () => {
     setLoading(true);
     setIsError(false);
