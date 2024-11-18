@@ -15,7 +15,7 @@ export const ScoreDetails = ({ scoreDetails }: Props) => {
         sections={[{ value: overall_score, color }]}
         label={
           <Text fw={700} ta="center" size="xl">
-            {`${overall_score}`}
+            {`${overall_score}%`}
           </Text>
         }
       />
