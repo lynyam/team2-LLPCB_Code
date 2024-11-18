@@ -10,7 +10,7 @@ export const ScoreDetails = ({ scoreDetails }: Props) => {
   const color =
     overall_score > 75 ? "red" : overall_score > 25 ? "yellow" : "green";
   return (
-    <Group>
+    <Group wrap="nowrap">
       <RingProgress
         sections={[{ value: overall_score, color }]}
         label={
