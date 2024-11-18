@@ -1,14 +1,18 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List, Dict, Optional
-from dataclasses import dataclass
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.prompts import ChatPromptTemplate
+import os
 import json
 import asyncio
-from modelApp.logger import get_logger
-import os
 from dotenv import load_dotenv
+from pydantic import BaseModel
+from dataclasses import dataclass
+from typing import List, Dict, Optional
+
+from fastapi import FastAPI, HTTPException
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.prompts import ChatPromptTemplate
+
+from logger import get_logger
+from score import get_score_details
+
 
 load_dotenv()
 log = get_logger()
@@ -23,6 +27,12 @@ class Manipulation(BaseModel):
     instance: str
     explanation: str
 
+class MetricsExplanation(BaseModel):
+    manipulation_density: str
+    affected_arguments_ratio: str
+    average_techniques_per_argument: str
+    max_techniques_in_single_argument: str
+
 class ArgumentManipulations(BaseModel):
     ad_populum: List[Manipulation]
     unspecified_authority_fallacy: List[Manipulation]
@@ -35,6 +45,16 @@ class ArgumentManipulations(BaseModel):
     hasty_generalization: List[Manipulation]
     texas_sharpshooter_fallacy: List[Manipulation]
 
+class ScoreDetails(BaseModel):
+    overall_score: float | str
+    manipulation_density: float | str
+    affected_arguments_ratio: float | str
+    average_techniques_per_argument: float | str
+    max_techniques_in_single_argument: int | str
+    risk_level: str
+    interpretation: str
+    metrics_explanation: MetricsExplanation
+
 class Argument(BaseModel):
     _type: str
     statement: str
@@ -44,6 +64,8 @@ class Argument(BaseModel):
 class AnalysisOutput(BaseModel):
     thesis: str
     arguments: List[Argument]
+    score: ScoreDetails
+    
 
 class ArgumentAnalysisAgent:
     def __init__(self):
@@ -66,16 +88,14 @@ Your analysis should be thorough and precise."""),
             ("human", """### TASK
 Analysis Request: Generate JSON Analysis of Text Hypothesis and Arguments
 
-Please analyze the provided text and return the results in the following JSON structure:
+Please analyze the provided text and return the results in the following JSON structure, it is important all keys are include they will be parsed:
 
 ### TEXT
 {text}
 
 ### OUTPUT
 {{
-    "main_hypothesis": {{
-        "statement": "<text>"
-    }},
+    "main_hypothesis": "<text>",
     "arguments": [
         {{
             "_type": "<primary|secondary>",
@@ -256,10 +276,17 @@ class TextAnalysisSystem:
                         'Noting cancer clusters without considering population density'
                 Counter: Examine all data points and consider broader context"""
 
+
     async def analyze_text(self, text: str) -> dict:
         """Perform analysis and return in API format"""
-        raw_results = await self._analyze_raw(text)
-        return self.raw_data_to_api_format(raw_results)
+        try:
+            raw_results = await self._analyze_raw(text)
+            if not raw_results:
+                raise ValueError("Raw analysis returned no results")
+            return self.raw_data_to_api_format(raw_results)
+        except Exception as e:
+            raise Exception(f"Error in analyze_text: {str(e)}")
+
 
     async def _analyze_raw(self, text: str) -> dict:
         """Perform both argument and manipulation analysis on the text concurrently."""
@@ -305,73 +332,113 @@ class TextAnalysisSystem:
 
     def raw_data_to_api_format(self, raw_analysis_dict: dict) -> dict:
         """Convert raw analysis data to API format"""
+        try:
 
-        argument_analysis = raw_analysis_dict.pop('argument_analysis')
-        thesis = argument_analysis.get('main_hypothesis').get('statement')
-        analysis = {
-            'thesis': thesis,
-            'arguments': []
-        }
-        # Construct the main frame of the analaysis dictionary response
-        arguments = argument_analysis.get('arguments')
-        for argument in arguments:
-            _type = argument.get('_type')
-            statememt = argument.get('statement')
-            connection_to_hypothesis = argument.get('connection_to_hypothesis')
-            arg_object = {
-                '_type': _type,
-                'statement': statememt,
-                'connection_to_hypothesis': connection_to_hypothesis,
-                'manipulations': {
-                    'ad_populum': [],
-                    'unspecified_authority_fallacy': [],
-                    'appeal_to_pride': [],
-                    'false_dilemma': [],
-                    'cherry_picking_data': [],
-                    'stork_fallacy': [],
-                    'fallacy_of_composition': [],
-                    'fallacy_of_division': [],
-                    'hasty_generalization': [],
-                    'texas_sharpshooter_fallacy': [],
-                }
+            argument_analysis = raw_analysis_dict.pop('argument_analysis')
+            if not argument_analysis:
+                raise ValueError("Missing argument_analysis in raw data")
+
+            # Extract and validate thesis
+            main_hypothesis = argument_analysis.get('main_hypothesis', {})
+            if not main_hypothesis:
+                log.error(f'argument_analysis :{argument_analysis}')
+                raise ValueError("Missing main_hypothesis")
+
+            # Initialize analysis structure
+            analysis = {
+                'thesis': main_hypothesis,
+                'arguments': []
             }
-            analysis["arguments"].append(arg_object)            
+            # Construct the main frame of the analaysis dictionary response
+            arguments = argument_analysis.get('arguments', [])
+            if not isinstance(arguments, list):
+                raise ValueError("Arguments must be a list")
+            
+            # Build arguments structure
+            for argument in arguments:
+                if not isinstance(argument, dict):
+                    log.error(f'argument {argument} is not a dictionary')
+                    continue  # Skip invalid arguments
+                arg_object = {
+                    '_type': argument.get('_type', ''),
+                    'statement': argument.get('statement', ''),
+                    'connection_to_hypothesis': argument.get('connection_to_hypothesis', ''),
+                    'manipulations': {
+                        'ad_populum': [],
+                        'unspecified_authority_fallacy': [],
+                        'appeal_to_pride': [],
+                        'false_dilemma': [],
+                        'cherry_picking_data': [],
+                        'stork_fallacy': [],
+                        'fallacy_of_composition': [],
+                        'fallacy_of_division': [],
+                        'hasty_generalization': [],
+                        'texas_sharpshooter_fallacy': [],
+                    }
+                }
+                analysis["arguments"].append(arg_object)            
 
-        arguments_processed = analysis.get('arguments')
+            arguments_processed = analysis.get('arguments')
 
-        # Loop over raw manipulations data, meaning first ad_populum, then unspecified authority fallacy, etc
-        for manipulation_name, manipulation_details in raw_analysis_dict.items():
-            # Loop over constructed arguments response, meaning in the fnal analysis go over each argument 
-            for processed_argument in arguments_processed:
-                # Find current argument in the raw manipulation data
-                # these are all the arguments
+            # Loop over raw manipulations data, meaning first ad_populum, then unspecified authority fallacy, etc
+            for manipulation_name, manipulation_details in raw_analysis_dict.items():
+                if not isinstance(manipulation_details, dict):
+                    log.error(f'manipulation details are not a dict: {manipulation_details}')
+                    continue  # Skip invalid manipulation details
+
                 raw_manipulations_per_argument = manipulation_details.get('arguments')
-                # text of current proccessed argument 
-                current_processed_argument_text = processed_argument.get('statement')
-                for raw_argument in raw_manipulations_per_argument:
-                    #get the text of the raw argument
-                    raw_arg_text = raw_argument.get('argument_text')
-                    is_current_argument = raw_arg_text == current_processed_argument_text
-                    contains_manipulation = raw_argument.get('contains_manipulation')
-                    # check if the raw_arguments is the same as the current processed argument
-                    if is_current_argument and contains_manipulation:
-                        processed_argument_manipulations = processed_argument.get('manipulations')
-                        current_manipulation_processed = processed_argument_manipulations.get(manipulation_name)
-                        raw_argument_manipulations = raw_argument.get('manipulations')
-                        for raw_argument_manipulation in raw_argument_manipulations:
-                            current_manipulation_processed.append(raw_argument_manipulation)
-                        break
-                    else:
-                        continue
+                if not isinstance(raw_manipulations_per_argument, list):
+                    continue  # Skip if not a valid list
 
-        self.print_anaysis(analysis)
+                # Loop over constructed arguments response, meaning in the fnal analysis go over each argument 
+                for processed_argument in arguments_processed:
+                    # Find current argument in the raw manipulation data
+                    # these are all the arguments
+                    # text of current proccessed argument 
+                    current_processed_argument_text = processed_argument.get('statement', '')
+                    if not current_processed_argument_text:
+                        log.error(f'no current_processed_argument_text: {current_processed_argument_text}')
+                        continue 
 
-        return analysis
-    
+                    for raw_argument in raw_manipulations_per_argument:
+                        if not isinstance(raw_argument, dict):
+                            log.error(f'raw_argument is not a dict: {raw_argument}')
+                            continue  # Skip invalid raw arguments
+                        #get the text of the raw argument
+                        raw_arg_text = raw_argument.get('argument_text', '')
+                        contains_manipulation = raw_argument.get('contains_manipulation', False)
+                        # check if the raw_arguments is the same as the current processed argument
+                        if raw_arg_text == current_processed_argument_text and contains_manipulation:                        
+                            processed_argument_manipulations = processed_argument.get('manipulations', {})
+                            current_manipulation_processed = processed_argument_manipulations.get(manipulation_name, [])
+                            
+                            raw_argument_manipulations = raw_argument.get('manipulations', [])
+                            if isinstance(raw_argument_manipulations, list):
+                                current_manipulation_processed.extend(
+                                    manip for manip in raw_argument_manipulations 
+                                    if isinstance(manip, (dict, str))  # Validate manipulation items
+                                )
+                            # for raw_argument_manipulation in raw_argument_manipulations:
+                                # current_manipulation_processed.append(raw_argument_manipulation)
+                            break
+                        else:
+                            continue
+
+            analysis['score'] = get_score_details(analysis)
+            self.print_anaysis(analysis)
+
+
+            return analysis
+        
+        except Exception as e:
+            raise Exception(f"Error in raw_data_to_api_format: {str(e)}")
+
     def print_anaysis(self, analysis: dict) -> None:
         thesis = analysis.get('thesis')
         log.debug(f'Thesis: {thesis}')
+
         an_args = analysis.get('arguments')
+
         for arg in an_args:
             statement = arg.get('statement')
             _type = arg.get('_type')
@@ -399,6 +466,9 @@ class TextAnalysisSystem:
             log.info(f'hasty_generalization: {hasty_generalization}')
             log.info(f'texas_sharpshooter_fallacy: {texas_sharpshooter_fallacy}')
             print('\n')
+
+        score = analysis.get('score')
+        log.debug(f'score: {score}')
 
 # Initialize the analysis system
 analysis_system = TextAnalysisSystem()
