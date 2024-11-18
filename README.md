@@ -1,6 +1,8 @@
 # gcpu-hackathon-2024
 
 # Importing the Chrome Extension into your Chromium browser
+## **Prerequisites**
+Before importing the extension, ensure the project has been built and the `frontend/dist` folder exists.
 
 ---
 
