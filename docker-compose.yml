@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"  # Port externe -> Port interne
+    networks:
+      - app-network
+
+  apigatewayms:
+    build:
+      context: ./api-gatewayms
+    container_name: apigatewayms
+    ports:
+      - "8080:8080"  # Port externe -> Port interne
+    networks:
+      - app-network
+    environment:
+      - ALLOWED_CHROME_EXTENSION_IDS=${ALLOWED_CHROME_EXTENSION_IDS}
+    env_file:
+      - .env
+
+  modelapp:
+    build:
+      context: ./modelApp
+    container_name: modelapp
+    ports:
+      - "8081:8081"  # Port externe -> Port interne
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+

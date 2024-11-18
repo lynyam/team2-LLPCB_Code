@@ -9,11 +9,14 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        String[] extensions = System.getenv("ALLOWED_CHROME_EXTENSION_IDS").split(",");
         // Configure CORS
-        registry.addMapping("/api/**")
-                .allowedOrigins("chrome-extension://epnbjgkcpakohacigmkgefkefbilimfc/")  // Frontend (Extension)
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Autoriser les méthodes HTTP
-                .allowedHeaders("*")  // Autoriser tous les en-têtes
-                .allowCredentials(true); // Autoriser les cookies et autres credentials
+        for (String extension : extensions) {
+            registry.addMapping("/api/**")
+                    .allowedOrigins("chrome-extension://" + extension)
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                    .allowedHeaders("*")
+                    .allowCredentials(true);
+        }
     }
 }
