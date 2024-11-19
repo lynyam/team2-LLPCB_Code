@@ -71,7 +71,7 @@ Before you begin, ensure you have the following installed on your machine:
 ####**1. Run docker compose**:
    - Use the following command to build and start the services:
      ```bash
-     docker-compose up
+     docker-compose up --build
      ```
 ---
 
