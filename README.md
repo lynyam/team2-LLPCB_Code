@@ -1,4 +1,14 @@
 # gcpu-hackathon-2024
+
+# **Description du Projet**
+Le projet GCPU Hackathon 2024 vise à développer une solution novatrice permettant d'analyser les articles en ligne pour en extraire la structure rhétorique et les arguments. L'objectif est d'améliorer la pensée critique en fournissant aux utilisateurs une compréhension claire des prémisses, arguments et conclusions d'un texte, tout en validant la cohérence logique des informations.
+
+Ce projet inclut :
+
+- Une extension de navigateur permettant d'envoyer des articles pour analyse et d'afficher les résultats.
+- Un backend qui orchestre les appels à plusieurs services spécialisés pour récupérer et analyser les textes.
+- Des services Python pour extraire les données textuelles et effectuer l'analyse rhétorique.
+
 # **Steps to Launch the Project**
 
 ## **Prerequisites**
