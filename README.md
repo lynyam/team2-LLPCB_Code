@@ -1,13 +1,54 @@
 # gcpu-hackathon-2024
 
-# **Description du Projet**
-Le projet GCPU Hackathon 2024 vise à développer une solution novatrice permettant d'analyser les articles en ligne pour en extraire la structure rhétorique et les arguments. L'objectif est d'améliorer la pensée critique en fournissant aux utilisateurs une compréhension claire des prémisses, arguments et conclusions d'un texte, tout en validant la cohérence logique des informations.
+# **Project Description**
+The **GCPU Hackathon 2024** project aims to develop an innovative solution for analyzing online articles to extract rhetorical structure and arguments. Its primary goal is to enhance critical thinking by providing users with a clear understanding of the premises, arguments, and conclusions of a text while validating the logical coherence of the presented information.
 
-Ce projet inclut :
+### **Project Objectives**:
+- Enable users to analyze an online article with a single click.
+- Provide feedback on the argumentative logic of the article.
+- Assist in verifying the validity of the arguments presented in the text.
 
-- Une extension de navigateur permettant d'envoyer des articles pour analyse et d'afficher les résultats.
-- Un backend qui orchestre les appels à plusieurs services spécialisés pour récupérer et analyser les textes.
-- Des services Python pour extraire les données textuelles et effectuer l'analyse rhétorique.
+The project comprises two main components:
+1. **Frontend (React Extension)**: Allows users to submit an article for analysis with a single click on the extension. The frontend sends the article's URL to the backend for processing.
+2. **Backend (API Gateway in Java)**: Manages calls to specialized services, including a Python service for analyzing the article's text and calculating a fallacy score using advanced AI tools like **Gemini-1.5-Pro and LangChain**.
+
+---
+
+## **Technical Documentation**
+
+### **System Architecture**
+
+The system is divided into several key components that interact to perform article analysis:
+
+#### 1. **Frontend (React Extension with Mantine)**
+The extension is built using **React** and **Mantine** for a modern and responsive design. Key functionalities include:
+- Provides a simple interface for users to initiate article analysis.
+- Capturing the URL of the page currently viewed by the user.
+- Provides a simple interface for users to initiate article analysis.
+- Displaying analysis results in a clear and user-friendly interface.
+
+#### 2. **Backend (Java API Gateway)**
+The backend is an API Gateway developed in **Java**, orchestrating calls to specialized services. Built with **Spring Boot**, its main responsibilities are:
+- Central coordinator of the architecture.
+- Routes requests between the frontend and backend services.
+- Calling the **RetrieveTextService** to extract raw text from the provided URL using **Jsoup** (to fetch and parse the article text).
+- Sending the extracted text to the **RhetoricDetectionService** for rhetorical analysis. Handles integration between the Java services and the Python service using RESTful APIs.
+- Returning the final results to the frontend as a structured JSON.
+
+#### 3. **RetrieveTextService (Java with Jsoup)**
+This service is responsible for extracting raw content from online articles. It leverages **Jsoup**, a powerful Java library, to:
+- Load the URL and parse the HTML DOM.
+- Extract text while filtering out ads and unnecessary elements.
+
+#### 4. **RhetoricDetectionService (Python with FastAPI)**
+This Python service is accessible via **FastAPI** and performs advanced rhetorical analysis using:
+- **Gemini-1.5-Pro**: An advanced AI model for text analysis.
+- **LangChain**: A framework used to orchestrate AI agents for identifying premises, arguments, and conclusions.
+- Returns a detailed JSON response containing detected premises, conclusions, and argument scores.
+
+
+The project is fully containerized to ensure seamless deployment and scalability. Below are the steps to set up the Dockerized environment.
+
 
 # **Steps to Launch the Project**
 
@@ -84,7 +125,33 @@ Before you begin, ensure you have the following installed on your machine:
      docker-compose up --build
      ```
 ---
+---
 
+## **Structure du Projet**
+
+### **Frontend (Extension React)**
+- **`frontend/`** :
+  - **`dist/`** : Contient le dossier généré pour l'extension Chrome.
+  - **`src/`** : Code source de l'extension React.
+  - **`public/`** : Contient les fichiers statiques comme les images et les icônes.
+
+### **Backend (API Gateway en Java)**
+- **`apigateway/`** :
+  - **`src/`** : Contient le code Java du backend.
+  - **`docker/`** : Contient les fichiers Docker pour le backend.
+  - **`pom.xml`** : Configuration Maven du backend.
+
+### **Services Python**
+- **`python-services/`** :
+  - **`rhetoric-analysis/`** : Service qui analyse la rhétorique de l'article, utilise Gemini-1.5-Pro et LangChain.
+
+---
+
+## **Future Improvements**
+
+- **Enhanced Python Services**: Introduce additional analyses, such as identifying cognitive biases.  
+- **Improved UI**: Develop visualizations, like graphs, to display argumentative relationships clearly.  
+- **Extended Java Services**: Add new services to further refine and detail the responses provided by the LLM.  
 
 ---
 
